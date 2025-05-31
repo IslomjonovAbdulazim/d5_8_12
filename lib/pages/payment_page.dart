@@ -1,6 +1,10 @@
 import 'dart:convert';
 
+import 'package:d5_8_12/pages/add_payment_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PaymentPage extends StatefulWidget {
@@ -11,9 +15,79 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
+  List<PaymentModel> payments = [];
+
+  @override
+  void initState() {
+    load();
+    super.initState();
+  }
+
+  void load() async {
+    payments = await getAllPayments();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      backgroundColor: Color(0xff1D182A),
+      appBar: AppBar(
+        backgroundColor: Color(0xff1D182A),
+        leading: CupertinoButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: Icon(
+            CupertinoIcons.chevron_back,
+            color: Colors.white,
+            size: 30,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: payments.length,
+                  itemBuilder: (context, index) {
+                    final model = payments[index];
+                    return ListTile(
+                      title: Text(model.cardNumber),
+                      subtitle: Text(model.cardholderName),
+                      trailing: CupertinoButton(
+                        onPressed: () {},
+                        child: Icon(CupertinoIcons.delete),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 10),
+              CupertinoButton(
+                color: Color(0xff8E6CEF),
+                onPressed: () async {
+                  await Get.to(AddPaymentPage());
+                  load();
+                },
+                child: Center(
+                  child: Text(
+                    "Add Card",
+                    style: GoogleFonts.quicksand(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -42,11 +116,11 @@ class PaymentModel {
 
   // toJson
   Map toJson() => {
-    "cardNumber": cardNumber,
-    "cvv": cvv,
-    "exp": exp,
-    "cardholderName": cardholderName,
-  };
+        "cardNumber": cardNumber,
+        "cvv": cvv,
+        "exp": exp,
+        "cardholderName": cardholderName,
+      };
 }
 
 Future<List<PaymentModel>> getAllPayments() async {
@@ -75,11 +149,3 @@ Future<void> addPayment(PaymentModel payment) async {
   all.add(payment);
   await saveAllPayments(all);
 }
-
-
-
-
-
-
-
-
