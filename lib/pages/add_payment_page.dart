@@ -168,6 +168,36 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                 ),
 
                 // Name
+                SizedBox(height: 10),
+                TextFormField(
+                  controller: nameController,
+                  focusNode: nameFocus,
+                  onTapOutside: (value) => nameFocus.unfocus(),
+                  validator: (value) {
+                    if (value!.length > 3) {
+                      return "Ism Kiritilsin";
+                    }
+                  },
+                  style: GoogleFonts.quicksand(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      filled: true,
+                      fillColor: Color(0xff342F3F),
+                      labelText: "Cardholder Name",
+                      labelStyle: GoogleFonts.quicksand(
+                        color: Color(0xffFFFFFF).withOpacity(.5),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      )),
+                ),
+
                 Spacer(),
                 CupertinoButton(
                   color: Color(0xff8E6CEF),
