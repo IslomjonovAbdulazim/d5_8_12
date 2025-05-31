@@ -1,3 +1,4 @@
+import 'package:d5_8_12/pages/payment_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -174,7 +175,7 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                   focusNode: nameFocus,
                   onTapOutside: (value) => nameFocus.unfocus(),
                   validator: (value) {
-                    if (value!.length > 3) {
+                    if (value!.length < 3) {
                       return "Ism Kiritilsin";
                     }
                   },
@@ -184,18 +185,19 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                     fontWeight: FontWeight.w700,
                   ),
                   decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      filled: true,
-                      fillColor: Color(0xff342F3F),
-                      labelText: "Cardholder Name",
-                      labelStyle: GoogleFonts.quicksand(
-                        color: Color(0xffFFFFFF).withOpacity(.5),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18,
-                      )),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Color(0xff342F3F),
+                    labelText: "Cardholder Name",
+                    labelStyle: GoogleFonts.quicksand(
+                      color: Color(0xffFFFFFF).withOpacity(.5),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
 
                 Spacer(),
@@ -204,6 +206,13 @@ class _AddPaymentPageState extends State<AddPaymentPage> {
                   onPressed: () async {
                     if (key.currentState!.validate()) {
                       // Create...
+                      final payment = PaymentModel(
+                        cardNumber: cardController.text,
+                        cvv: cvvController.text,
+                        exp: expController.text,
+                        cardholderName: nameController.text,
+                      );
+                      await addPayment(payment);
                       Get.back();
                     }
                   },
