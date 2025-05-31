@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
@@ -16,8 +19,8 @@ class _PaymentPageState extends State<PaymentPage> {
 
 class PaymentModel {
   // members
-  late int cardNumber;
-  late int cvv;
+  late String cardNumber;
+  late String cvv;
   late String exp;
   late String cardholderName;
 
@@ -46,6 +49,32 @@ class PaymentModel {
   };
 }
 
+Future<List<PaymentModel>> getAllPayments() async {
+  final db = await SharedPreferences.getInstance();
+  final data = db.getString("payments") ?? "[]";
+  final jsonList = List.from(jsonDecode(data));
+  final result = jsonList.map((json) => PaymentModel.fromJson(json)).toList();
+  return result;
+}
+
+Future<void> saveAllPayments(List<PaymentModel> payments) async {
+  final jsonList = payments.map((model) => model.toJson()).toList();
+  final data = jsonEncode(jsonList);
+  final db = await SharedPreferences.getInstance();
+  await db.setString("payments", data);
+}
+
+Future<void> deletePayment(PaymentModel payment) async {
+  final all = await getAllPayments();
+  all.removeWhere((model) => model.cardNumber == payment.cardNumber);
+  await saveAllPayments(all);
+}
+
+Future<void> addPayment(PaymentModel payment) async {
+  final all = await getAllPayments();
+  all.add(payment);
+  await saveAllPayments(all);
+}
 
 
 
